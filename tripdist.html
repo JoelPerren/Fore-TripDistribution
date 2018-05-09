@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trip Distribution</title>
+  <link rel="stylesheet" href="cssreset.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div id="MapContainer">
+    <div id="Map"></div>
+  </div>
+  
+  <div id="OptionsContainer">
+    <h1>Origin</h1>
+    <textarea id="OriginBox"></textarea>
+    <button id="LoadOrigin" onclick="loadOrigin();">Load</button>
+    <button id="ClearOrigin" onclick="clearOrigin();">Clear</button>
+    
+    <h1>Destinations</h1>
+    <textarea id="DestinationsBox"></textarea>
+    <button id="LoadDestinations" onclick="loadDestinations();">Load</button>
+    <button id="ClearDestinations" onclick="clearDestinations();">Clear</button>
+    
+    <h1>Calculate Routes</h1>
+    <p>Transit Mode:</p>
+    <select id="TransitMode">
+      <option value="DRIVING">Driving</option>
+      <option value="TRANSIT">Public Transport</option>
+      <option value="WALKING">Walking</option>
+      <option value="BICYCLING">Cycling</option>
+    </select>
+    <button id="CalculateRoutes" onclick="calcAllTrips();">Calculate Routes</button>
+    <div id="StatusText">Status: NOT RUN</div>
+    
+    <h1>Output</h1>
+    <p>Route Option:</p>
+    <select id="RouteOption" onchange="drawLines();">
+      <option value="0">1</option>
+      <option value="1">2</option>
+      <option value="2">3</option>
+    </select>
+    <textarea id="OutputBox"></textarea>
+    <button id="GetJSON" onclick="generateJSON();">Get Output</button>
+  </div>
+  
+  <h1>Usage Limits:</h1>
+  <p>2,500 requests/day</p>
+  <p>50 requests/second</p>
+  <p>Calculation of routes may take a few minutes depending on how many destinations there are, to avoid breaching the limits.</p>
+  <p>If you are only receiving a partial set of results, it may be that more than 2,500 requests have been placed today.</p>
+</body>
+</html>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCm3_JwdRT759CGspBhlpDnRbRMp_cydfg&libraries=geometry"></script>
+<script src="setup.js"></script>

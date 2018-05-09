@@ -1,0 +1,57 @@
+html, body {
+  font-family: "Verdana", serif;
+  font-size: 10pt;
+  height: 100%;
+}
+
+#MapContainer {
+  height: 100%;
+  width: 60%;
+  margin-right: 1%;
+  float: left;
+}
+
+#Map {
+  height: 100%;
+}
+
+#OptionsContainer {
+  width: 39%;
+  float: left;
+  margin-top: 1%;
+}
+
+textarea {
+  height: 75px;
+  width: 300px;
+  display: block;
+  margin-bottom: 1em;
+}
+
+button {
+  margin-bottom: 2em;
+}
+
+h1 {
+  font-weight: 600;
+  margin-bottom: 1em;
+}
+
+p {
+  margin-bottom: 0.5em;
+  line-height: 1.3em;
+}
+
+ul {
+  margin-left: 2%;
+}
+
+select {
+  display: block;
+  margin-bottom: 1em;
+}
+
+#StatusText {
+  font-size: 8pt;
+  display: inline-block;
+}
