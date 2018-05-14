@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Trip Distribution</title>
+    <!-- Styles -->
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="styles/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="styles/styles.css" />
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,600|Open+Sans+Condensed:300,700" rel="stylesheet">
+  </head>
+  <body>
+      <div id="wrapper">
+
+
+          <section class="mode-container">
+            <div class="mode-container--item">
+              <h1>Trip Distribution</h1>
+            </div>
+            <div class="mode-container--item">
+              <h2><span style="color:#BBB">&mdash;</span> Input Mode <span style="color:#BBB">&mdash;</span></h2>
+              <a class="button button--active" href="#">Census Mode</a>
+              <a class="button" href="#">Postcode Mode</a>
+              <a class="button" href="#">Manual Mode</a>
+            </div>
+            <div class="mode-container--item mode-container--item__penultimate">
+              <h2><span style="color:#BBB">&mdash;</span> Other Tools <span style="color:#BBB">&mdash;</span></h2>
+              <a class="button" href="#">Find MSOA</a>
+            </div>
+            <div class="mode-container--item">
+              <h3>Explainatory Notes</h3>
+              <p class="explainatory-text">Census Mode allows the calculation of trip routes from an origin point to a given selection of census geographies, such as local authority districts (e.g. Leeds) and/or MSOAs.</p>
+            </div>
+          </section> <!-- End of mode-container -->
+
+
+          <section class="map-container">
+          </section> <!-- End of map-container -->
+
+
+          <section class="controls-container">
+            <div class="controls-container--item">
+              <img src="img/bullet.svg">
+              <h3>Select Origin</h3>
+              <p>Click on the map to set or change the origin point</p>
+            </div>
+
+            <div class="controls-container--item">
+              <img src="img/bullet.svg">
+              <h3>Select Destinations</h3>
+              <p>Enter destination names below and confirm.</p>
+              <textarea class="input"></textarea>
+              <p class="status-text">Status: Ok</p>
+              <a class="button button__small button__danger" href="#">Reset</a>
+              <a class="button button__small" href="#">Confirm</a>
+            </div>
+
+            <div class="controls-container--item">
+              <img src="img/bullet.svg">
+              <h3>Run Distribution</h3>
+              <p>Confirm mode of travel and run</p>
+              <select class="__big" name="travel-mode"> <!--Supplement an id here instead of using 'text'-->
+                <option value="first">Driving</option>
+                <option value="second" selected>Walking</option>
+                <option value="third">Cycling</option>
+                <option value="fourth">Transit</option>
+              </select>
+              <a class="button" href="#">Run</a>
+            </div>
+
+            <div class="controls-container--item">
+              <img src="img/bullet.svg">
+              <h3>Get Results</h3>
+              <p>Choose format and generate output</p>
+              <a class="button button--active button__small" href="#">GeoJSON</a>
+              <a class="button button__small" href="#">CSV</a>
+              <select class="__small" name="output">
+                <option value="route1">Route 1</option>
+                <option value="route2">Route 2</option>
+                <option value="route3">Route 3</option>
+              </select>
+              <textarea class="ouput"></textarea>
+            </div>
+          </section> <!-- End of controls-container -->
+
+
+      </div>
+  </body>
+</html>
