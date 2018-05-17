@@ -16,21 +16,44 @@ html, body, #wrapper {
 section {
   border-radius: 20px;
   margin: 40px 20px;
+  overflow: hidden;
 }
 
 .mode-container {
-  flex: 1 1;
+  flex: 0 0 325px;
   display: flex;
   flex-direction: column;
 }
 
 .map-container {
-  flex: 3 2;
+  flex: 1 0;
   background-color: #FFF;
+  position: relative;
+}
+
+#map {
+  height: 100%;
+  width: 100%;
+}
+
+#pac-input {
+  z-index: 1;
+  position: absolute;
+  top: 2.5%;
+  left: 25%;
+  width: 50%;
+  padding: 10px;
+  border-radius: 20px;
+  border: 1px solid #AAA;
+  background-color: rgba(255, 255, 255, 0.5);
+  font-family: 'Open Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: black;
 }
 
 .controls-container {
-  flex: 1 1;
+  flex: 0 0 352px;
   background-color: #EEE;
   display: flex;
   flex-direction: row;
@@ -84,6 +107,8 @@ h3 {
   font-size: 1.6rem;
   font-weight: 600;
   text-decoration: none;
+  transition: background-color 0.2s ease-in-out;
+  transition: background-color 0.2s -webkit-ease-in-out;
 }
 
 .button:hover {
@@ -100,7 +125,8 @@ h3 {
   margin: 10px 0 0 10px;
   padding: 5px 5px;
   width: 25%;
-  font-size: 1.4rem; 
+  font-size: 1.4rem;
+  flex: 0 0 30%
 }
 
 .button__danger {
@@ -144,11 +170,10 @@ p {
   margin: 5px 0 0 0;
 }
 
-
 textarea {
   margin: 10px 0 0 0px;
   padding: 10px;
-  height: 115px;
+  height: 100px;
   flex: 1 1 100%;
   border-radius: 20px;
   border: 1px solid #AAA;
@@ -159,7 +184,7 @@ textarea {
 }
 
 p.status-text {
-  flex: 1 1;
+  flex: 2 1;
   margin: 15px 5px 0 0;
   color: #AAA;
   font-size: 1.2rem;
@@ -168,6 +193,7 @@ p.status-text {
 
 select {
   border-radius: 20px;
+  border: 1px solid #AAA;
   font-family: 'Open Sans', sans-serif;
   font-size: 1.4rem;
 }
@@ -179,9 +205,8 @@ select.__big {
 }
 
 select.__small {
-  //flex: 1 1;
   margin: 10px 0 0 10px;
   padding: 0px 5px;
-  //width: 25%;
-  font-size: 1.4rem; 
+  font-size: 1.4rem;
+  flex: 0 0 30%;
 }
