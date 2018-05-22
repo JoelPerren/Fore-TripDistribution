@@ -12,10 +12,13 @@ var activeMode,
 function getActiveMode() {
   if (document.getElementById("census-mode").classList.contains("button--active")) {
     activeMode = "census-mode";
+    return activeMode;
   } else if (document.getElementById("postcode-mode").classList.contains("button--active")) {
     activeMode = "postcode-mode";
+    return activeMode;
   } else {
     activeMode = "manual-mode";
+    return activeMode;
   }
 }
 

@@ -2,26 +2,23 @@
  * Global Variables
  */
 
-var debug = true,
-    mapOptions = {
-
-      // Centre on Leeds
-      center: {lat: 54.4, lng: -1.548},
-      zoom: 6,
-      disableDefaultUI: true
-
-    },
-    map,
-    mapBounds = new google.maps.LatLngBounds(
-      new google.maps.LatLng(58.421032, -10.774160),
-      new google.maps.LatLng(50.508936, 4.343028)),
-    searchBox,
-    originMarker,
-    destinationMarkers = [];
-
-searchBox = new google.maps.places.SearchBox(document.getElementById("pac-input"), {
+var debug = true;
+var mapOptions = {
+  center: {lat: 54.4, lng: -1.548},
+  zoom: 6,
+  disableDefaultUI: true
+};
+var map;
+var mapBounds = new google.maps.LatLngBounds(
+  new google.maps.LatLng(58.421032, -10.774160),
+  new google.maps.LatLng(50.508936, 4.343028)
+);
+var searchBox = new google.maps.places.SearchBox(document.getElementById("pac-input"), {
   bounds: mapBounds
 });
+var originMarker;
+var destinationMarkers = [];
+var destinationsInput = document.getElementById("destinations-input");
 
 /*********************
  * Utility Functions *

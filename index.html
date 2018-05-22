@@ -56,10 +56,10 @@
               <img src="img/bullet.svg">
               <h3>Select Destinations</h3>
               <p>Enter destination names below and confirm.</p>
-              <textarea class="input"></textarea>
+              <textarea id="destinations-input" class="input"></textarea>
               <p class="status-text">Status: Ok</p>
               <button class="button button__small button__danger">Reset</button>
-              <button class="button button__small">Confirm</button>
+              <button class="button button__small" onClick="readDestinations()">Confirm</button>
             </div>
 
             <div class="controls-container--item">
@@ -95,7 +95,9 @@
     <!-- Scripts -->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDHB5nfvmcTl9aCjBuzBUcvXz2dWHj_o0k&libraries=geometry&libraries=places"></script>
     <script src="js/ui.js"></script>
+    <script src="js/io.js"></script>
     <script src="js/map.js"></script>
     <script src="js/setup.js"></script>
+    <script src="data/census-centroids.js"></script>
   </body>
 </html>
