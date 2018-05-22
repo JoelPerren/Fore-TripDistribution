@@ -6,14 +6,7 @@ function readDestinations() {
     destinationsInput.value = stringifyArray(results[0]);
     return results[1];
   } else if (getActiveMode() == "postcode-mode") {
-    parsePostcodeInput().then(results => {
-      setTimeout(() => {
-        let outputs = results;
-        console.log(results);
-        destinationsInput.value = stringifyArray(results[0]);
-        return outputs[1];
-      }, 2000);
-    });
+    lookupPostcodes().then(results => console.log(results));
   }
 }
 
@@ -65,88 +58,91 @@ function matchCensusInputs(inputs) {
 // Postcode-mode
 // -----------------------------------------------------------------------------
 
-// Reads postcode inputs
-function parsePostcodeInput() {
-  return new Promise(resolve => {
-    const postcodes = splitPostcodes(destinationsInput.value.split(/\n/));
-    const results = [[],[]]; // [[error],[valid]]
+function parsePostcodes() {
 
-    postcodes.forEach(element => {
-      fetchPostcodeData(element.postcode)
-        .then(response => results[1].push({
-          "name": response.result.postcode,
-          "x": response.result.longitude,
-          "y": response.result.latitude
-        }))
-        .catch(error => fetchOutcodeData(element.outcode)
-          .then(response => results[1].push({
-            "name": response.result.outcode,
-            "x": response.result.longitude,
-            "y": response.result.latitude
-          }))
-          .catch(error => {
-            results[0].push(element.postcode);
-          })
-        );
-    });
-
-    resolve(results);
-  });
 }
 
-// Takes in an array of postcodes and concatanates them. Returns an object array
-// containing the postcode, outcode, and incode.
-function splitPostcodes(inputs) {
-  var postcodes = [];
+function lookupPostcodes() {
+  let inputPostcodes = splitPostcodes();
+  let promises = [];
 
-  inputs.forEach(function(element) {
-    if (element.length >= 4) {
+  inputPostcodes.forEach(postcode => {
+    let apiUrl = getApiUrl(postcode.name);
+    promises.push(fetchPostcodeData(apiUrl));
+  });
+
+  return Promise.all(promises)
+    .then(data => {
+      let results = [[],[]]; // [[errors],[valids]]
+
+      for (let i = 0; i < data.length; i++) {
+        if (data[i].status == 200) {
+          results[1].push({
+            "name": inputPostcodes[i].name,
+            "x": data[i].result.longitude,
+            "y": data[i].result.latitude,
+          });
+
+        } else {
+          results[0].push({
+            "name": inputPostcodes[i].name
+          });
+        }
+      }
+      return Promise.resolve(results);
+    });
+}
+
+function splitPostcodes() {
+  let inputPostcodes = destinationsInput.value.split(/\n/);
+  let processedPostcodes = [];
+
+  inputPostcodes.forEach(element => {
+    if (element.length > 4) {
       let concat = element.replace(/\s+/g, '');
       let length = concat.length;
       let outcode = concat.substring(0, (length - 3));
-      let incode = concat.substring((length -3), length);
-      postcodes.push({"postcode": concat, "outcode": outcode, "incode": incode});
 
+      processedPostcodes.push({
+        "name": concat,
+        "outcode": outcode,
+      });
     } else {
-      let concat = element.replace(/\s+/g, '');
-      postcodes.push({"postcode": concat, "outcode": concat, "incode": ""});
+      processedPostcodes.push({
+        "name": element,
+        "outcode": element,
+      });
     }
-
   });
-  return postcodes;
+
+  return processedPostcodes;
 }
 
-function fetchPostcodeData(postcode) {
-  return fetch(`https://api.postcodes.io/postcodes/${postcode}`, {mode: `cors`, method: `GET`})
-    .then(checkFetchStatus)
-    .then(fetchResponseToJSON)
-    .then(json => {
-      return json;
-    });
-}
-
-function checkFetchStatus(response) {
-  if (response.status === 200) {
-    return Promise.resolve(response);
+function getApiUrl(postcode) {
+  if (postcode.length > 4) {
+    return `https://api.postcodes.io/postcodes/${postcode}`;
   } else {
-    return Promise.reject(new Error (response.statusText));
+    return `https://api.postcodes.io/outcodes/${postcode}`;
   }
 }
 
-function fetchResponseToJSON(response) {
-  return response.json();
+// Fetch postcode data from postcodes.io
+function fetchPostcodeData(url) {
+  return fetch(url, {mode: `cors`})
+    .then(checkStatus);
 }
 
-function fetchOutcodeData(outcode) {
-  return fetch(`https://api.postcodes.io/outcodes/${outcode}`, {mode: `cors`, method: `GET`})
-    .then(checkFetchStatus)
-    .then(fetchResponseToJSON)
-    .then(json => {
-      return json;
-    });
+function checkStatus(response) {
+  if (response.ok) {
+    return Promise.resolve(response.json());
+  } else {
+    return Promise.resolve(response.json());
+  }
 }
 
+// -----------------------------------------------------------------------------
 // Utilities
+// -----------------------------------------------------------------------------
 
 function stringifyArray(array) {
   let result = "";
