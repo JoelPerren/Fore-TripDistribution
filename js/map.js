@@ -24,6 +24,27 @@ let destinationsInput = document.getElementById("destinations-input");
 // Load Markers
 // -----------------------------------------------------------------------------
 
+function loadDestinations() {
+  readDestinations()
+    .then(data => {
+      let destinations = data;
+      console.log(destinations);
+
+      destinations.forEach(destination => {
+        destinationMarkers.push(createMarkerCoords(
+          destination.name,
+          destination.lat,
+          destination.lng,
+          "Destination"
+        ));
+      });
+
+      destinationMarkers.forEach(marker => {
+        marker.setMap(map);
+      });
+    });
+}
+
 // -----------------------------------------------------------------------------
 // Utility Functions
 // -----------------------------------------------------------------------------
@@ -38,8 +59,36 @@ function clearOrigin() {
   originMarker = null;
 }
 
+function clearDestinations() {
+  destinationMarkers.forEach(marker => {
+    marker.setMap(null);
+    marker = null;
+  });
+}
+
 // Place a marker on the map
-function createMarker(name, LatLng, type) {
+function createMarkerLatLng(name, LatLng, type) {
+    let marker = new google.maps.Marker({
+    title: name,
+    position: LatLng,
+    icon: getMarkerStyle(type)
+  });
+
+  return marker;
+}
+
+// Place a marker on the map (alternate parameters)
+function createMarkerCoords(name, lat, lng, type) {
+    let marker = new google.maps.Marker({
+    title: name,
+    position: {lat: lat, lng: lng},
+    icon: getMarkerStyle(type)
+  });
+
+  return marker;
+}
+
+function getMarkerStyle(type) {
   let style;
 
   if (type == "Origin") {
@@ -62,13 +111,7 @@ function createMarker(name, LatLng, type) {
     };
   }
 
-  let marker = new google.maps.Marker({
-    title: name,
-    position: LatLng,
-    icon: style
-  });
-
-  return marker;
+  return style;
 }
 
 // -----------------------------------------------------------------------------
@@ -98,6 +141,6 @@ searchBox.addListener('places_changed', function() {
 // Return LatLng Coordinates when map is clicked
 google.maps.event.addListener(map, "click", function(e) {
   clearOrigin();
-  originMarker = createMarker("Origin", e.latLng, "Origin");
+  originMarker = createMarkerLatLng("Origin", e.latLng, "Origin");
   originMarker.setMap(map);
 });

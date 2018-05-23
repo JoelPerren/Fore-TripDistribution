@@ -1,17 +1,18 @@
 /*jshint esversion: 6 */
 
 function readDestinations() {
-  if (getActiveMode() == "census-mode") {
-    let results = parseCensusInput();
-    destinationsInput.value = stringifyArray(results[0]);
-    return results[1];
-  } else if (getActiveMode() == "postcode-mode") {
-    lookupPostcodes().then(results => {
-      console.log(results);
+  return new Promise(resolve => {
+    if (getActiveMode() == "census-mode") {
+      let results = parseCensusInput();
       destinationsInput.value = stringifyArray(results[0]);
-      return results[1];
-    });
-  }
+      resolve(results[1]);
+    } else if (getActiveMode() == "postcode-mode") {
+      lookupPostcodes().then(results => {
+        destinationsInput.value = stringifyArray(results[0]);
+        resolve(results[1]);
+      });
+    }
+  });
 }
 
 // -----------------------------------------------------------------------------
@@ -45,7 +46,7 @@ function matchCensusInputs(inputs) {
     for (var j = 0; j < censusCentroids.length; j++) {
       match = false;
       if (inputs[i] == censusCentroids[j].name) {
-        results[1].push({"name": censusCentroids[j].name, "x": censusCentroids[j].x, "y": censusCentroids[j].y});
+        results[1].push({"name": censusCentroids[j].name, "lat": censusCentroids[j].y, "lng": censusCentroids[j].x});
         match = true;
         break outer;
       }
@@ -58,10 +59,6 @@ function matchCensusInputs(inputs) {
 // -----------------------------------------------------------------------------
 // Postcode-mode
 // -----------------------------------------------------------------------------
-
-function parsePostcodes() {
-
-}
 
 function lookupPostcodes() {
   let inputPostcodes = splitPostcodes();
@@ -80,8 +77,8 @@ function lookupPostcodes() {
         if (data[i].status == 200) {
           results[1].push({
             "name": inputPostcodes[i].name,
-            "x": data[i].result.longitude,
-            "y": data[i].result.latitude,
+            "lng": data[i].result.longitude,
+            "lat": data[i].result.latitude,
           });
 
         } else {
