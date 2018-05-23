@@ -6,7 +6,11 @@ function readDestinations() {
     destinationsInput.value = stringifyArray(results[0]);
     return results[1];
   } else if (getActiveMode() == "postcode-mode") {
-    lookupPostcodes().then(results => console.log(results));
+    lookupPostcodes().then(results => {
+      console.log(results);
+      destinationsInput.value = stringifyArray(results[0]);
+      return results[1];
+    });
   }
 }
 
@@ -33,9 +37,7 @@ function parseCensusInput() {
 // Returns an array with the sucessful matches and errors
 function matchCensusInputs(inputs) {
   var match = false;
-  var matchedDestinations = [];
-  var unmatchedDestinations = [];
-  var results = [];
+  var results = [[],[]]; // [[invalid],[valid]]
 
   inner:
   for (var i = 0; i < inputs.length; i++) {
@@ -43,14 +45,13 @@ function matchCensusInputs(inputs) {
     for (var j = 0; j < censusCentroids.length; j++) {
       match = false;
       if (inputs[i] == censusCentroids[j].name) {
-        matchedDestinations.push({"name": censusCentroids[j].name, "x": censusCentroids[j].x, "y": censusCentroids[j].y});
+        results[1].push({"name": censusCentroids[j].name, "x": censusCentroids[j].x, "y": censusCentroids[j].y});
         match = true;
         break outer;
       }
     }
-    if (!match) unmatchedDestinations.push(inputs[i]);
+    if (!match) results[0].push(inputs[i]);
   }
-  results.push(unmatchedDestinations, matchedDestinations);
   return results;
 }
 
@@ -84,9 +85,8 @@ function lookupPostcodes() {
           });
 
         } else {
-          results[0].push({
-            "name": inputPostcodes[i].name
-          });
+          console.log(inputPostcodes[i].name);
+          results[0].push(inputPostcodes[i].name);
         }
       }
       return Promise.resolve(results);
@@ -98,20 +98,22 @@ function splitPostcodes() {
   let processedPostcodes = [];
 
   inputPostcodes.forEach(element => {
-    if (element.length > 4) {
-      let concat = element.replace(/\s+/g, '');
-      let length = concat.length;
-      let outcode = concat.substring(0, (length - 3));
+    if (element !== "") {
+      if (element.length > 4) {
+        let concat = element.replace(/\s+/g, '');
+        let length = concat.length;
+        let outcode = concat.substring(0, (length - 3));
 
-      processedPostcodes.push({
-        "name": concat,
-        "outcode": outcode,
-      });
-    } else {
-      processedPostcodes.push({
-        "name": element,
-        "outcode": element,
-      });
+        processedPostcodes.push({
+          "name": concat,
+          "outcode": outcode,
+        });
+      } else {
+        processedPostcodes.push({
+          "name": element,
+          "outcode": element,
+        });
+      }
     }
   });
 
@@ -147,7 +149,9 @@ function checkStatus(response) {
 function stringifyArray(array) {
   let result = "";
   for (let i = 0; i < array.length; i++) {
-    result += `${array[i]}\n`;
+    if (array[i] !== "") {
+      result += `${array[i]}\n`;
+    }
   }
   return result;
 }
