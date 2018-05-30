@@ -184,7 +184,7 @@ function resultsToCSV(results) {
 
   try {
     results.forEach(item => {
-      csv += `\n${item.name},${item[routeOption].distance},${item[routeOption].time}`;
+      csv += `\n"${item.name}",${item[routeOption].distance},${item[routeOption].time}`;
     });
   } catch (err) {
     // Do Nothing
