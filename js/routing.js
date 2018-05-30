@@ -1,8 +1,9 @@
-/*jshint esversion: 6 */
-
 const directionsService = new google.maps.DirectionsService();
 let finalRoutes = [];
 
+/**
+ * Populates the global finalRoutes array with results and calls drawLines()
+ */
 function calculateTrips() {
   requestAllRoutes()
     .then(routes => {
@@ -15,6 +16,10 @@ function calculateTrips() {
 
 }
 
+/**
+ * Calculates routes between origin and each destination.
+ * @returns Returns all the routes
+ */
 async function requestAllRoutes() {
   let data = [];
 
@@ -36,6 +41,11 @@ async function requestAllRoutes() {
   }
 }
 
+/**
+ * Requests a single route between origin and one destination. Retries with an
+ * exponential backoff on fail up to 4 times.
+ * @returns Returns a successful route
+ */
 async function request_retry(originMarker, destinationMarker, retries = 4, delay = 250) {
   try {
     console.log(`${delay} ms delay`);
@@ -51,12 +61,17 @@ async function request_retry(originMarker, destinationMarker, retries = 4, delay
   }
 }
 
+/**
+ * Requests a single route between origin and one destination.
+ * @returns Returns a successful route
+ * @throws Throws failed request status
+ */
 function makeDirectionsRequest(originMarker, destinationMarker) {
-  const selectedMode = document.querySelector("select[name=travel-mode]").value;
+  const travelMode = document.querySelector("select[name=travel-mode]").value;
   const request = {
     origin: originMarker.getPosition(),
     destination: destinationMarker.getPosition(),
-    travelMode: selectedMode,
+    travelMode: travelMode,
     provideRouteAlternatives: true,
     region: "uk"
   };
@@ -77,6 +92,9 @@ function makeDirectionsRequest(originMarker, destinationMarker) {
 // Utilitiy Functions
 // -----------------------------------------------------------------------------
 
+/**
+ * Checks there is a valid origin and destination
+ */
 function checkOriginAndDestinations() {
   if (originMarker.getPosition() !== undefined && destinationMarkers.length !== 0) {
     return true;
@@ -84,6 +102,10 @@ function checkOriginAndDestinations() {
   return false;
 }
 
+/**
+ * Messily processes a route result into a json object
+ * @returns Returns a json object with relevant route information
+ */
 function processRouteResult(routeResult, iterator) {
   let result;
 
@@ -133,6 +155,9 @@ function processRouteResult(routeResult, iterator) {
   return result;
 }
 
+/**
+ * Pauses for a given time
+ */
 function pause(duration) {
   return new Promise(resolve => {
     setTimeout(resolve, duration);

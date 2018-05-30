@@ -1,5 +1,3 @@
-/*jshint esversion: 6 */
-
 // -----------------------------------------------------------------------------
 // Global Variables
 // -----------------------------------------------------------------------------
@@ -57,14 +55,14 @@ function drawLines() {
       var line = new google.maps.Polyline({
         path: google.maps.geometry.encoding.decodePath(finalRoutes[i][routeOption].polyline),
         strokeColor: "#000000",
-        strokeOpacity: 0.25,
+        strokeOpacity: 0.2,
         strokeWeight: 2,
         map: map
       });
       routeLines.push(line);
       line.setMap(map);
     } catch (err) {
-      //Do Nothing
+      // Do Nothing
     }
   }
 }
@@ -80,11 +78,6 @@ function clearLines() {
 // Utility Functions
 // -----------------------------------------------------------------------------
 
-// Initialise the map - called in HTML once Google API has loaded
-function initMap() {
-  map = new google.maps.Map(document.getElementById("map"), mapOptions);
-}
-
 function clearOrigin() {
   originMarker.setMap(null);
   originMarker = null;
@@ -96,10 +89,11 @@ function clearDestinations() {
   });
   destinationMarkers = [];
   document.querySelector("#run-distribution").disabled = false;
+  clearLines();
   finalRoutes = [];
 }
 
-// Place a marker on the map
+// Creates a marker from a LatLng object
 function createMarkerLatLng(name, LatLng, type) {
   let marker = new google.maps.Marker({
     title: name,
@@ -110,7 +104,7 @@ function createMarkerLatLng(name, LatLng, type) {
   return marker;
 }
 
-// Place a marker on the map (alternate parameters)
+// Creates a marker from a pair of xy coordinates
 function createMarkerCoords(name, lat, lng, type) {
   let marker = new google.maps.Marker({
     title: name,

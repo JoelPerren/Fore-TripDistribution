@@ -1,3 +1,9 @@
+/**
+ * Calls functions to parse either census or postcode inputs. Errors are
+ * displayed in the text area.
+ * @return Returns a promise which resolves to an array of objects with the
+ * parameters 'name', 'lat', and 'lng'
+ */
 function readDestinations() {
   return new Promise(resolve => {
     if (getActiveMode() == "census-mode") {
@@ -19,15 +25,17 @@ function readDestinations() {
 // Census-mode
 // -----------------------------------------------------------------------------
 
-// Reads census area inputs
+/**
+* Reads information from the textarea.
+* @return Returns the result of passing the information to matchCensusInputs()
+*/
 function parseCensusInput() {
-  var tempInputs = destinationsInput.value.split(/\n/);
-  var censusInputs = [];
-  var results = [];
+  let tempInputs = destinationsInput.value.split(/\n/);
+  let censusInputs = [];
 
-  tempInputs.forEach(function(element) {
-    if (element != "") {
-      censusInputs.push(element);
+  tempInputs.forEach(function(item) {
+    if (item != "") {
+      censusInputs.push(item);
     }
   });
 
@@ -36,14 +44,18 @@ function parseCensusInput() {
 
 // Matches census inputs to names in census-centroids.js
 // Returns an array with the sucessful matches and errors
+/**
+* Matches the inputs to the names in census-centroids.js
+* @return Returns a 2d array with the errors [0] and successful matches [1]
+*/
 function matchCensusInputs(inputs) {
-  var match = false;
-  var results = [[],[]]; // [[invalid],[valid]]
+  let match = false;
+  let results = [[],[]]; // [[invalid],[valid]]
 
   inner:
-  for (var i = 0; i < inputs.length; i++) {
+  for (let i = 0; i < inputs.length; i++) {
     outer:
-    for (var j = 0; j < censusCentroids.length; j++) {
+    for (let j = 0; j < censusCentroids.length; j++) {
       match = false;
       if (inputs[i] == censusCentroids[j].name) {
         results[1].push({"name": censusCentroids[j].name, "lat": censusCentroids[j].y, "lng": censusCentroids[j].x});
@@ -60,12 +72,16 @@ function matchCensusInputs(inputs) {
 // Postcode-mode
 // -----------------------------------------------------------------------------
 
+/**
+ * Looksup coordinates of postcodes and processes them into a 2-d results array.
+ * @return Returns a 2d array with the errors [0] and successful lookups [1]
+ */
 function lookupPostcodes() {
   let inputPostcodes = splitPostcodes();
   let promises = [];
 
   inputPostcodes.forEach(postcode => {
-    let apiUrl = getApiUrl(postcode.name);
+    let apiUrl = getApiUrl(postcode);
     promises.push(fetchPostcodeData(apiUrl));
   });
 
@@ -82,43 +98,38 @@ function lookupPostcodes() {
               "lat": data[i].result.latitude,
             });
           } else {
-            results[0].push(`${inputPostcodes[i].name} (valid postcode but null xy coordinates)`);
+            results[0].push(`${inputPostcodes[i]} (valid postcode but null xy coordinates)`);
           }
         } else {
-          results[0].push(`${inputPostcodes[i].name} (invalid postcode)`);
+          results[0].push(`${inputPostcodes[i]} (invalid postcode)`);
         }
       }
       return Promise.resolve(results);
     });
 }
 
+/**
+ * Reads and processes postcodes from the text area.
+ * @return Returns an array of concatenated postcodes
+ */
 function splitPostcodes() {
   let inputPostcodes = destinationsInput.value.split(/\n/);
   let processedPostcodes = [];
 
   inputPostcodes.forEach(element => {
     if (element !== "") {
-      if (element.length > 4) {
-        let concat = element.replace(/\s+/g, "");
-        let length = concat.length;
-        let outcode = concat.substring(0, (length - 3));
-
-        processedPostcodes.push({
-          "name": concat,
-          "outcode": outcode,
-        });
-      } else {
-        processedPostcodes.push({
-          "name": element,
-          "outcode": element,
-        });
-      }
+      let postcode = element.replace(/\s+/g, "");
+      processedPostcodes.push(postcode);
     }
   });
 
   return processedPostcodes;
 }
 
+/**
+ * Gets the required postcode.io URL for either postcode or outcode lookup.
+ * @return Returns a URL for postcode.io
+ */
 function getApiUrl(postcode) {
   if (postcode.length > 4) {
     return `https://api.postcodes.io/postcodes/${postcode}`;
@@ -127,60 +138,49 @@ function getApiUrl(postcode) {
   }
 }
 
-// Fetch postcode data from postcodes.io
+/**
+ * Makes a cors fetch GET request
+ * @return Returns a 'json-ified' response
+ */
 function fetchPostcodeData(url) {
   return fetch(url, {mode: "cors"})
-    .then(checkStatus);
-}
-
-function checkStatus(response) {
-  if (response.ok) {
-    return Promise.resolve(response.json());
-  } else {
-    return Promise.resolve(response.json());
-  }
+    .then(response => Promise.resolve(response.json()));
 }
 
 // -----------------------------------------------------------------------------
 // Output
 // -----------------------------------------------------------------------------
 
+/**
+ * Parses the finalResults array into a GeoJSON string
+ * @return Returns a 'json-ified' string
+ */
 function resultsToGeoJSON(results) {
-  let routeOption = document.querySelector("select[name=output]").value;
+  let routeOption = getRouteOption();
   let outputGeoJSON = {
     "type": "FeatureCollection",
     "name": "Routes",
     "features": []
   };
 
-  if (routeOption == "route1") {
+  try{
     results.forEach(item => {
-      outputGeoJSON.features.push(routeToJsonFeature(item.name, item.route1.polyline));
+      outputGeoJSON.features.push(routeToJsonFeature(item.name, item[routeOption].polyline));
     });
-  } else if (routeOption == "route2") {
-    results.forEach(item => {
-      try {
-        outputGeoJSON.features.push(routeToJsonFeature(item.name, item.route2.polyline));
-      } catch (err) {
-        // Do nothing
-      }
-    });
-  } else if (routeOption == "route3") {
-    results.forEach(item => {
-      try {
-        outputGeoJSON.features.push(routeToJsonFeature(item.name, item.route3.polyline));
-      } catch (err) {
-        // Do nothing
-      }
-    });
+  } catch (err) {
+    // Do nothing
   }
 
   return JSON.stringify(outputGeoJSON);
 }
 
+/**
+ * Parses the finalResults array into a GeoJSON string
+ * @return Returns a csv string
+ */
 function resultsToCSV(results) {
   let csv = "Name,Distance (m),Time (s)";
-  let routeOption = document.querySelector("select[name=output]").value;
+  let routeOption = getRouteOption();
 
   try {
     results.forEach(item => {
@@ -193,8 +193,9 @@ function resultsToCSV(results) {
   return csv;
 }
 
+/** Downloads finalResults either as CSV or GeoJSON */
 function downloadData() {
-  let outputType = activeOutput;
+  let outputType = getActiveOutput();
   if (finalRoutes.length == 0) {
     alert("No results");
   } else {
@@ -206,9 +207,10 @@ function downloadData() {
   }
 }
 
+/** Downloads finalResults either as CSV */
 function downloadCSV(content) {
   let csv = "data:text/csv;charset=utf-8," + content;
-  let routeOption = document.querySelector("select[name=output]").value;
+  let routeOption = getRouteOption();
   let data = encodeURI(csv);
   let a = document.createElement("a");
 
@@ -220,9 +222,10 @@ function downloadCSV(content) {
   document.body.removeChild(a);
 }
 
+/** Downloads finalResults either as GeoJSON */
 function downloadJSON(content) {
   let data = "data:text/csv;charset=utf-8," + encodeURIComponent(content);
-  let routeOption = document.querySelector("select[name=output]").value;
+  let routeOption = getRouteOption();
   let a = document.createElement("a");
 
   a.setAttribute("href", data);
@@ -236,6 +239,10 @@ function downloadJSON(content) {
 // Utilities
 // -----------------------------------------------------------------------------
 
+/**
+ * Parses an array into a newline delimited string
+ * @return Returns a newline delimited string
+ */
 function stringifyArray(array) {
   let result = "";
   for (let i = 0; i < array.length; i++) {
@@ -246,6 +253,10 @@ function stringifyArray(array) {
   return result;
 }
 
+/**
+ * Parses an encoded_polyline return into an array of coordinates
+ * @return An array of xy coordinates for each node of the line
+ */
 function encodedLinetoCoordinateArray(encodedLine) {
   let latLngArray = google.maps.geometry.encoding.decodePath(encodedLine);
   let coordinateArray = [];
@@ -258,6 +269,10 @@ function encodedLinetoCoordinateArray(encodedLine) {
   return coordinateArray;
 }
 
+/**
+ * Parses a single returned route into a JSON feature
+ * @return Returns a JSON feature
+ */
 function routeToJsonFeature(name, polyline) {
   let jsonFeature = {
     "type": "Feature",

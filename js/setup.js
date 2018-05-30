@@ -1,4 +1,0 @@
-function setup() {
-  getActiveMode();
-  getActiveOutput();
-}
