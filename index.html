@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Trip Distribution</title>
+    <!-- Styles -->
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="styles/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="styles/styles.css" />
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,600|Open+Sans+Condensed:300,700" rel="stylesheet">
+  </head>
+  <body>
+      <div id="wrapper">
+
+
+          <section class="mode-container">
+            <div class="mode-container--item">
+              <h1>Trip Distribution</h1>
+            </div>
+            <div class="mode-container--item mode-container--item__penultimate">
+              <h2><span style="color:#BBB">&mdash;</span> Input Mode <span style="color:#BBB">&mdash;</span></h2>
+              <button id="census-mode" class="button button--active" href="#" onClick="setActiveButton('mode', 'census-mode')">Census Mode</button>
+              <button id="postcode-mode" class="button" href="#" onClick="setActiveButton('mode', 'postcode-mode')">Postcode Mode</button>
+              <!-- <button id="manual-mode" class="button" href="#" onClick="setActiveButton('mode', 'manual-mode')">Manual Mode</button> -->
+            </div>
+            <!--
+            <div class="mode-container--item mode-container--item__penultimate">
+              <h2><span style="color:#BBB">&mdash;</span> Other Tools <span style="color:#BBB">&mdash;</span></h2>
+              <a class="button" href="#">Find MSOA</a>
+            </div>
+
+            <div class="mode-container--item">
+              <h3>Explainatory Notes</h3>
+              <p class="explainatory-text">Census Mode allows the calculation of trip routes from an origin point to a given selection of census geographies, such as local authority districts (e.g. Leeds) and/or MSOAs.</p>
+            </div>
+            -->
+          </section> <!-- End of mode-container -->
+
+
+          <section class="map-container">
+            <input id="pac-input" type="text" placeholder="Search...">
+            <div id="map"></div>
+          </section> <!-- End of map-container -->
+
+
+          <section class="controls-container">
+            <div class="controls-container--item">
+              <img src="img/bullet.svg">
+              <h3>Select Origin</h3>
+              <p>Click on the map to set or change the origin point</p>
+            </div>
+
+            <div class="controls-container--item">
+              <img src="img/bullet.svg">
+              <h3>Select Destinations</h3>
+              <p>Enter destination names below and confirm.</p>
+              <textarea id="destinations-input" class="input"></textarea>
+              <p class="status-text"></p>
+              <button class="button button__small button__danger" onClick="clearDestinations()">Reset</button>
+              <button class="button button__small" onClick="loadDestinations()">Confirm</button>
+            </div>
+
+            <div class="controls-container--item">
+              <img src="img/bullet.svg">
+              <h3>Run Distribution</h3>
+              <p>Confirm mode of travel and run</p>
+              <select class="__big" name="travel-mode">
+                <option value="DRIVING">Driving</option>
+                <option value="WALKING">Walking</option>
+                <option value="BICYCLING">Cycling</option>
+                <option value="TRANSIT">Transit</option>
+              </select>
+              <button id="run-distribution" class="button" onClick="calculateTrips()">Run</button>
+            </div>
+
+            <div class="controls-container--item">
+              <img src="img/bullet.svg">
+              <h3>Get Results</h3>
+              <p>Choose format and generate output</p>
+              <button id="geojson" class="button button--active button__small" onClick="setActiveButton('output', 'geojson')">GeoJSON</button>
+              <button id="csv" class="button button__small" onClick="setActiveButton('output', 'csv')">CSV</button>
+              <select class="__small" name="output" onChange="drawLines()">
+                <option value="route1">Route 1</option>
+                <option value="route2">Route 2</option>
+                <option value="route3">Route 3</option>
+              </select>
+              <button id="download-data" class="button" onClick="downloadData()">Download</button>
+              <!-- <textarea id="output-box" class="ouput"></textarea> -->
+            </div>
+          </section> <!-- End of controls-container -->
+
+
+      </div> <!-- End of Wrapper -->
+    <!-- Scripts -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDHB5nfvmcTl9aCjBuzBUcvXz2dWHj_o0k&libraries=geometry&libraries=places"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/io.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/routing.js"></script>
+    <script src="data/census-centroids.js"></script>
+  </body>
+</html>
