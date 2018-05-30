@@ -138,6 +138,12 @@ h3 {
   background-color: darkred;
 }
 
+.button:disabled {
+  background-color: #BBB;
+  color: white;
+  border-color: #BBB;
+}
+
 p {
   margin: 0;
   padding: 0;

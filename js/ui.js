@@ -2,8 +2,8 @@
  * Global Variables
  */
 
-var activeMode,
-    activeOutput;
+let activeMode;
+let activeOutput;
 
 /*
  * Functions
@@ -39,5 +39,13 @@ function setActiveButton(type, targetElement) {
     document.getElementById(activeOutput).classList.toggle("button--active");
     document.getElementById(targetElement).classList.toggle("button--active");
     activeOutput = targetElement;
+
+    if (activeOutput == "geojson") resultsToGeoJSON(finalRoutes);
+    if (activeOutput == "csv") resultsToCSV(finalRoutes);
   }
+}
+
+function displayOutput() {
+  if (activeOutput == "geojson") resultsToGeoJSON(finalRoutes);
+  if (activeOutput == "csv") resultsToCSV(finalRoutes);
 }

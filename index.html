@@ -24,18 +24,19 @@
               <h2><span style="color:#BBB">&mdash;</span> Input Mode <span style="color:#BBB">&mdash;</span></h2>
               <button id="census-mode" class="button button--active" href="#" onClick="setActiveButton('mode', 'census-mode')">Census Mode</button>
               <button id="postcode-mode" class="button" href="#" onClick="setActiveButton('mode', 'postcode-mode')">Postcode Mode</button>
-              <button id="manual-mode" class="button" href="#" onClick="setActiveButton('mode', 'manual-mode')">Manual Mode</button>
+              <!-- <button id="manual-mode" class="button" href="#" onClick="setActiveButton('mode', 'manual-mode')">Manual Mode</button> -->
             </div>
             <!--
             <div class="mode-container--item mode-container--item__penultimate">
               <h2><span style="color:#BBB">&mdash;</span> Other Tools <span style="color:#BBB">&mdash;</span></h2>
               <a class="button" href="#">Find MSOA</a>
             </div>
-            -->
+
             <div class="mode-container--item">
               <h3>Explainatory Notes</h3>
               <p class="explainatory-text">Census Mode allows the calculation of trip routes from an origin point to a given selection of census geographies, such as local authority districts (e.g. Leeds) and/or MSOAs.</p>
             </div>
+            -->
           </section> <!-- End of mode-container -->
 
 
@@ -57,7 +58,7 @@
               <h3>Select Destinations</h3>
               <p>Enter destination names below and confirm.</p>
               <textarea id="destinations-input" class="input"></textarea>
-              <p class="status-text">Status: Ok</p>
+              <p class="status-text"></p>
               <button class="button button__small button__danger" onClick="clearDestinations()">Reset</button>
               <button class="button button__small" onClick="loadDestinations()">Confirm</button>
             </div>
@@ -67,12 +68,12 @@
               <h3>Run Distribution</h3>
               <p>Confirm mode of travel and run</p>
               <select class="__big" name="travel-mode">
-                <option value="first">Driving</option>
-                <option value="second" selected>Walking</option>
-                <option value="third">Cycling</option>
-                <option value="fourth">Transit</option>
+                <option value="DRIVING">Driving</option>
+                <option value="WALKING">Walking</option>
+                <option value="BICYCLING">Cycling</option>
+                <option value="TRANSIT">Transit</option>
               </select>
-              <button class="button">Run</button>
+              <button id="run-distribution" class="button" onClick="calculateTrips()">Run</button>
             </div>
 
             <div class="controls-container--item">
@@ -81,12 +82,13 @@
               <p>Choose format and generate output</p>
               <button id="geojson" class="button button--active button__small" onClick="setActiveButton('output', 'geojson')">GeoJSON</button>
               <button id="csv" class="button button__small" onClick="setActiveButton('output', 'csv')">CSV</button>
-              <select class="__small" name="output">
+              <select class="__small" name="output" onChange="drawLines()">
                 <option value="route1">Route 1</option>
                 <option value="route2">Route 2</option>
                 <option value="route3">Route 3</option>
               </select>
-              <textarea class="ouput"></textarea>
+              <button id="download-data" class="button" onClick="downloadData()">Download</button>
+              <!-- <textarea id="output-box" class="ouput"></textarea> -->
             </div>
           </section> <!-- End of controls-container -->
 
@@ -97,6 +99,7 @@
     <script src="js/ui.js"></script>
     <script src="js/io.js"></script>
     <script src="js/map.js"></script>
+    <script src="js/routing.js"></script>
     <script src="js/setup.js"></script>
     <script src="data/census-centroids.js"></script>
   </body>

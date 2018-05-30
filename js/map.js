@@ -19,6 +19,7 @@ const searchBox = new google.maps.places.SearchBox(document.getElementById("pac-
 let originMarker = new google.maps.Marker();
 let destinationMarkers = [];
 let destinationsInput = document.getElementById("destinations-input");
+let routeLines = [];
 
 // -----------------------------------------------------------------------------
 // Load Markers
@@ -27,10 +28,8 @@ let destinationsInput = document.getElementById("destinations-input");
 function loadDestinations() {
   readDestinations()
     .then(data => {
-      let destinations = data;
-      console.log(destinations);
 
-      destinations.forEach(destination => {
+      data.forEach(destination => {
         destinationMarkers.push(createMarkerCoords(
           destination.name,
           destination.lat,
@@ -43,6 +42,38 @@ function loadDestinations() {
         marker.setMap(map);
       });
     });
+}
+
+// -----------------------------------------------------------------------------
+// Draw Lines
+// -----------------------------------------------------------------------------
+
+function drawLines() {
+  clearLines();
+  var routeOption = document.querySelector("select[name=output]").value;
+
+  for(let i = 0; i < finalRoutes.length; i++) {
+    try {
+      var line = new google.maps.Polyline({
+        path: google.maps.geometry.encoding.decodePath(finalRoutes[i][routeOption].polyline),
+        strokeColor: "#000000",
+        strokeOpacity: 0.25,
+        strokeWeight: 2,
+        map: map
+      });
+      routeLines.push(line);
+      line.setMap(map);
+    } catch (err) {
+      //Do Nothing
+    }
+  }
+}
+
+function clearLines() {
+  routeLines.forEach(function (element) {
+    element.setMap(null);
+  });
+  routeLines = [];
 }
 
 // -----------------------------------------------------------------------------
@@ -62,13 +93,15 @@ function clearOrigin() {
 function clearDestinations() {
   destinationMarkers.forEach(marker => {
     marker.setMap(null);
-    marker = null;
   });
+  destinationMarkers = [];
+  document.querySelector("#run-distribution").disabled = false;
+  finalRoutes = [];
 }
 
 // Place a marker on the map
 function createMarkerLatLng(name, LatLng, type) {
-    let marker = new google.maps.Marker({
+  let marker = new google.maps.Marker({
     title: name,
     position: LatLng,
     icon: getMarkerStyle(type)
@@ -79,7 +112,7 @@ function createMarkerLatLng(name, LatLng, type) {
 
 // Place a marker on the map (alternate parameters)
 function createMarkerCoords(name, lat, lng, type) {
-    let marker = new google.maps.Marker({
+  let marker = new google.maps.Marker({
     title: name,
     position: {lat: lat, lng: lng},
     icon: getMarkerStyle(type)
@@ -119,9 +152,9 @@ function getMarkerStyle(type) {
 // -----------------------------------------------------------------------------
 
 // Listen for search event fired and retrieve centre map on location
-searchBox.addListener('places_changed', function() {
+searchBox.addListener("places_changed", function() {
   var places = searchBox.getPlaces(),
-      searchLocation = new google.maps.LatLngBounds();
+    searchLocation = new google.maps.LatLngBounds();
 
   if (places.length == 0) {
     return;
