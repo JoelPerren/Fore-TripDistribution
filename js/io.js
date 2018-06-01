@@ -163,13 +163,13 @@ function resultsToGeoJSON(results) {
     "features": []
   };
 
-  try{
-    results.forEach(item => {
+  results.forEach(item => {
+    try{
       outputGeoJSON.features.push(routeToJsonFeature(item.name, item[routeOption].polyline));
-    });
-  } catch (err) {
-    // Do nothing
-  }
+    } catch (err) {
+      // Do nothing
+    }
+  });
 
   return JSON.stringify(outputGeoJSON);
 }
@@ -182,13 +182,13 @@ function resultsToCSV(results) {
   let csv = "Name,Distance (m),Time (s)";
   let routeOption = getRouteOption();
 
-  try {
-    results.forEach(item => {
+  results.forEach(item => {
+    try {
       csv += `\n"${item.name}",${item[routeOption].distance},${item[routeOption].time}`;
-    });
-  } catch (err) {
-    // Do Nothing
-  }
+    } catch (err) {
+      // Do Nothing
+    }
+  });
 
   return csv;
 }
