@@ -82,7 +82,8 @@ function makeDirectionsRequest(originMarker, destinationMarker) {
         console.log("Success!!");
         resolve(result);
       } else {
-        throw(status);
+        console.log(`Fail, throwing ${status}`);
+        reject(status);
       }
     });
   });
