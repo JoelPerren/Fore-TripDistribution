@@ -262,7 +262,7 @@ function encodedLinetoCoordinateArray(encodedLine) {
   let coordinateArray = [];
 
   latLngArray.forEach(item => {
-    tempArray = [item.lng(), item.lat()];
+    tempArray = [(Math.round(item.lng()*100000)/100000), (Math.round(item.lat()*100000)/100000)];
     coordinateArray.push(tempArray);
   });
 
